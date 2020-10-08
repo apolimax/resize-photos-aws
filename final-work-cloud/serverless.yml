@@ -1,0 +1,26 @@
+service: final-work-cloud
+frameworkVersion: "2"
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  memorySize: 256
+  timeout: 3
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - s3:GetObject
+        - s3:PutObject
+      Resource:
+        - "arn:aws:s3:::*"
+
+functions:
+  resize:
+    handler: resize.handle
+    environment:
+      uploaded: uploaded-photos-nuages
+      shrinked: shrinked-photos-nuages
+    events:
+      - s3:
+          bucket: uploaded-photos-nuages
+          event: s3:ObjectCreated:*
